@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peo's 4-Week Strength Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: #2a2a2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+  }
+
+  header {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 24px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .week-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .week-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .week-btn.active, .week-btn:hover {
+    background: var(--accent);
+    color: #0f0f0f;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .week-btn.deload.active, .week-btn.deload:hover {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: white;
+  }
+
+  .container { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+
+  .week-header {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .week-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .week-header p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .week-header.deload { border-left-color: var(--accent2); }
+
+  .sessions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .session-card {
+    background: var(--surface);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .session-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .session-badge {
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .session-badge.gym { background: var(--accent2); color: white; }
+
+  .session-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .session-meta {
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 2px;
+  }
+
+  .session-location {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .exercises { padding: 0; }
+
+  .exercise-block {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exercise-block:last-child { border-bottom: none; }
+
+  .block-label {
+    padding: 10px 20px 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .exercise-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 14px;
+    transition: background 0.15s;
+  }
+
+  .exercise-row:hover { background: var(--surface2); }
+
+  .check-wrap {
+    flex-shrink: 0;
+  }
+
+  .check-wrap input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .ex-info { flex: 1; min-width: 0; }
+
+  .ex-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+  }
+
+  .ex-sets {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .ex-note {
+    font-size: 0.72rem;
+    color: var(--accent2);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .video-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #ff0000;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  }
+
+  .video-btn:hover { opacity: 0.8; }
+
+  .video-btn svg { width: 12px; height: 12px; fill: white; }
+
+  .progression-box {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .progression-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .prog-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .prog-table th {
+    text-align: left;
+    padding: 6px 10px;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prog-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .prog-table tr:last-child td { border-bottom: none; }
+
+  .prog-table .highlight { color: var(--accent); font-weight: 600; }
+
+  .tip-box {
+    margin: 16px 0;
+    padding: 14px 18px;
+    background: #1a1a0f;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #ccc;
+  }
+
+  .tip-box strong { color: var(--accent); }
+
+  .schedule-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin: 16px 0 24px;
+  }
+
+  .day-cell {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 8px 4px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .day-cell .day-name {
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .day-cell .day-activity {
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .day-cell.strength { border-color: var(--accent); background: #1a1a0a; }
+  .day-cell.strength .day-activity { color: var(--accent); }
+  .day-cell.sport .day-activity { color: #88ccff; }
+  .day-cell.gym { border-color: var(--accent2); background: #1a0f0a; }
+  .day-cell.gym .day-activity { color: var(--accent2); }
+  .day-cell.rest .day-activity { color: var(--muted); }
+
+  .hidden { display: none; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+    .schedule-strip { grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .day-cell { padding: 6px 2px; }
+    .day-cell .day-name { font-size: 0.55rem; }
+    .day-cell .day-activity { font-size: 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Strength Plan</h1>
+  </div>
+  <div class="subtitle">59 · Racket Sports + Home Gym · Relative Strength Focus</div>
+  <div class="week-nav">
+    <button class="week-btn active" onclick="showWeek(1)">Week 1 — 3×5</button>
+    <button class="week-btn" onclick="showWeek(2)">Week 2 — 3×3</button>
+    <button class="week-btn" onclick="showWeek(3)">Week 3 — 5/3/1</button>
+    <button class="week-btn deload" onclick="showWeek(4)">Week 4 — Deload</button>
+    <button class="journal-nav-btn" onclick="showJournal()">📓 Journal</button>
+  </div>
+</header>
+
+<div id="main-content">
+<div class="container">
+
+  <!-- WEEKLY SCHEDULE OVERVIEW -->
+  <div class="schedule-strip">
+    <div class="day-cell strength"><div class="day-name">Mon</div><div class="day-activity">—</div></div>
+    <div class="day-cell strength"><div class="day-name">Tue</div><div class="day-activity">💪 Session A<br>Home</div></div>
+    <div class="day-cell sport"><div class="day-name">Wed</div><div class="day-activity">🎾 Tennis<br>Morning</div></div>
+    <div class="day-cell gym"><div class="day-name">Thu</div><div class="day-activity">🏋 Gym<br>Morning</div></div>
+    <div class="day-cell sport"><div class="day-name">Fri</div><div class="day-activity">🏸 Badminton<br>Evening</div></div>
+    <div class="day-cell strength"><div class="day-name">Sat</div><div class="day-activity">💪 Session B<br>Home</div></div>
+    <div class="day-cell sport"><div class="day-name">Sun</div><div class="day-activity">🏸 Sometimes<br>Badminton</div></div>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div id="week1">
+    <div class="week-header">
+      <h2>Week 1 — 3 Sets × 5 Reps</h2>
+      <p>Foundation week. Focus on movement quality above all. Sets at 65% / 75% / 85% of working max. Leave at least one rep in the tank on every set — especially Tuesday before Wednesday tennis.</p>
+    </div>
+
+    <div class="progression-box">
+      <h3>5/3/1 Intensity Guide — Week 1</h3>
+      <table class="prog-table">
+        <tr><th>Set</th><th>Intensity</th><th>Reps</th><th>Feel</th></tr>
+        <tr><td>Set 1</td><td>65%</td><td>5</td><td>Easy warm-up pace</td></tr>
+        <tr><td>Set 2</td><td>75%</td><td>5</td><td>Moderate — controlled</td></tr>
+        <tr><td class="highlight">Set 3</td><td class="highlight">85%</td><td class="highlight">5</td><td class="highlight">Challenging — stop before failure</td></tr>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <strong>Starting weight rule:</strong> Start embarrassingly light. If you think your squat working max is 60kg, use 40kg as your 100% for the first cycle. You can always add weight — you can't un-injure a tendon.
+    </div>
+
+    <div class="sessions-grid">
+
+      <!-- SESSION A -->
+      <div class="session-card">
+        <div class="session-header">
+          <div>
+            <div class="session-badge">Session A</div>
+          </div>
+          <div>
+            <div class="session-title">Tuesday — Home Gym</div>
+            <div class="session-meta">~55 min · KB + Rings + Pull-up bar</div>
+          </div>
+          <div class="session-location">🏠 Home</div>
+        </div>
+        <div class="exercises">
+
+          <div class="exercise-block">
+            <div class="block-label">Warm-Up — 10 min</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Light Cardio</div><div class="ex-sets">3 min — jumping jacks, march on spot, or skipping</div></div>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Hip Circles + Thoracic Rotations</div><div class="ex-sets">10 reps each side</div></div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=qVFAVQhDVbk" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Band Shoulder Dislocates</div><div class="ex-sets">10 slow reps</div></div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=i4HMvHuvuMk" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Main Lift — Squat</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Goblet Squat</div>
+                <div class="ex-sets">Week 1: 3×5 at 65% / 75% / 85% · Rest 2–3 min between sets</div>
+                <div class="ex-note">Hold KB at chest. Go deep. Pause 1 sec at bottom.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=MxsFDhcyFyE" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Supplemental</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Dumbbell Overhead Press</div>
+                <div class="ex-sets">3×8 · Moderate weight · Rest 90 sec</div>
+                <div class="ex-note">Standing preferred — engages core. Strict form, no leg drive.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=qEwKCR5JCog" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Push + Pull</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Ring Push-Ups</div>
+                <div class="ex-sets">4×10–15 · Rings low, body angled · Full stretch at bottom</div>
+                <div class="ex-note">Rings turned out at top. Go deep — this is your chest builder.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=5j3kmNkS3iM" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Pull-Ups</div>
+                <div class="ex-sets">4 sets × max reps with good form · Rest 2 min</div>
+                <div class="ex-note">Full dead hang at bottom. Chin over bar at top. No kipping.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=eGo4IYlbE5g" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Assistance + Mobility</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Band Face Pulls</div>
+                <div class="ex-sets">3×15 · Light band · Pull to forehead level</div>
+                <div class="ex-note">Shoulder health — critical for racket sports. Never skip this.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=rep-qVOkqgk" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Dead Bugs</div>
+                <div class="ex-sets">3×10 each side · Slow and controlled</div>
+                <div class="ex-note">Lower back protection. Press lower back into floor throughout.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=4XLEnwUr1d8" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Hip Flexor Stretch</div>
+                <div class="ex-sets">2 min each side · Kneeling lunge position</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=YqF8GHm5tPo" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Finish Session A -->
+        <div class="finish-block">
+          <textarea id="note-SessionA" class="session-note" rows="2" placeholder="Optional note — how did it feel? Any PBs? Anything tight?"></textarea>
+          <button class="finish-btn" onclick="finishSession('Session A — Home', currentWeek())">✓ FINISH SESSION A</button>
+        </div>
+
+      </div>
+
+      <!-- SESSION B GYM -->
+      <div class="session-card">
+        <div class="session-header">
+          <div>
+            <div class="session-badge gym">Session B</div>
+          </div>
+          <div>
+            <div class="session-title">Thursday Morning — Gym</div>
+            <div class="session-meta">~50 min · Barbell focus · Evening tennis same day — keep it submaximal</div>
+          </div>
+          <div class="session-location">🏋 Gym</div>
+        </div>
+        <div class="exercises">
+
+          <div class="exercise-block">
+            <div class="block-label">Warm-Up — 10 min</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Bike or Rowing Machine</div><div class="ex-sets">5 min easy pace · Heart rate up, not winded</div></div>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Cat-Cow + Glute Bridges</div><div class="ex-sets">10 reps each · Prep for deadlift</div></div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=kqnua4rHVVA" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Main Lift — Deadlift</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Romanian Deadlift (Barbell)</div>
+                <div class="ex-sets">Week 1: 3×5 at 65% / 75% / 85% · Rest 2–3 min</div>
+                <div class="ex-note">Hinge at hips. Bar stays close to legs. Feel the hamstring stretch.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=JCXUYuzwNrM" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Supplemental</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Barbell Bench Press</div>
+                <div class="ex-sets">3×8 · Moderate weight · Full range of motion</div>
+                <div class="ex-note">Same-day as evening tennis — do NOT go heavy. Leave 3 reps in tank.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=vcBig73ojpE" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Barbell Row</div>
+                <div class="ex-sets">3×8 · Hinge at hips, pull to lower chest</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=FWJR5Ve8bnQ" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Push + Pull</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Pull-Ups or Lat Pulldown</div>
+                <div class="ex-sets">4 sets × max (or 4×8 on machine) · Rest 2 min</div>
+                <div class="ex-note">Pull-ups if you have energy. Lat pulldown if fatigued — same-day tennis.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=eGo4IYlbE5g" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Ring Dips (or Bench Dips)</div>
+                <div class="ex-sets">3×8–10 · Full range · Chest forward for pec activation</div>
+                <div class="ex-note">Lean forward slightly — this hits chest. Upright = triceps only.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=RZHDxfITEaE" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Assistance + Mobility</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Glute Bridges</div>
+                <div class="ex-sets">3×12 · Bodyweight or plate on hips · 1 sec hold at top</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=wPM8icPu6H8" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Foam Roller — Thoracic Extension</div>
+                <div class="ex-sets">2 min · Roll upper back segment by segment</div>
+                <div class="ex-note">Gold for racket sport players. Undoes all the forward rounding.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=4-8KMGPy_-I" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Finish Session B -->
+        <div class="finish-block">
+          <textarea id="note-SessionB" class="session-note" rows="2" placeholder="Optional note — weights used, how body felt, energy level before evening tennis?"></textarea>
+          <button class="finish-btn" style="background: var(--accent2); color: white;" onclick="finishSession('Session B — Gym', currentWeek())">✓ FINISH SESSION B</button>
+        </div>
+
+      </div>
+
+      <!-- SESSION C HOME -->
+      <div class="session-card">
+        <div class="session-header">
+          <div>
+            <div class="session-badge">Session C</div>
+          </div>
+          <div>
+            <div class="session-title">Saturday — Home Gym</div>
+            <div class="session-meta">~55 min · Best buffer day — no sport before or after</div>
+          </div>
+          <div class="session-location">🏠 Home</div>
+        </div>
+        <div class="exercises">
+
+          <div class="exercise-block">
+            <div class="block-label">Warm-Up — 10 min</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info"><div class="ex-name">Light Cardio + Hip Prep</div><div class="ex-sets">3 min cardio · Cat-cow · Glute bridges × 10</div></div>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Main Lift — KB Deadlift</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Double KB Deadlift</div>
+                <div class="ex-sets">Week 1: 3×5 at 65% / 75% / 85% · Rest 2–3 min</div>
+                <div class="ex-note">Two 20kg KBs = 40kg total. If too light, switch to single-leg variant.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=op9kVnSso6Q" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Supplemental</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">DB Floor Press</div>
+                <div class="ex-sets">3×8 · Flat on floor, elbows at 45° · Full pause at bottom</div>
+                <div class="ex-note">Floor limits range slightly — combine with ring push-ups for full depth.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=uUGDRwge4F8" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Ring Rows</div>
+                <div class="ex-sets">3×10 · Adjust angle to control difficulty · Full arm extension</div>
+                <div class="ex-note">More horizontal = harder. Great horizontal pull to balance all pressing.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=LR0oBOPmG2E" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Push + Pull — Volume Block</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Deep Push-Ups on DBs</div>
+                <div class="ex-sets">4×12–15 · DBs as handles · Pause 1 sec at bottom stretch</div>
+                <div class="ex-note">Handles let you go deeper than floor. This is your chest volume.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=WLJ9t3NSP4A" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Pull-Ups</div>
+                <div class="ex-sets">4 sets × max reps · Rest 2 min · Push for more than Tuesday</div>
+                <div class="ex-note">Saturday is your best recovery buffer — this is where you push harder.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=eGo4IYlbE5g" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">KB Swings</div>
+                <div class="ex-sets">3×15 · 20kg · Hip hinge explosive — not a squat</div>
+                <div class="ex-note">Posterior chain power. Great carryover to racket sports and golf.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=YSxHifyI6s8" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+          <div class="exercise-block">
+            <div class="block-label">Mobility — Don't Skip</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Pigeon Pose or Figure-4 Stretch</div>
+                <div class="ex-sets">2 min each side · Hip external rotation</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=o8DMsKBE_6E" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">World's Greatest Stretch</div>
+                <div class="ex-sets">5 reps each side · Full body mobility in one movement</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=bJSLijl3sTk" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
+        </div><!-- end exercises -->
+
+        <!-- Finish Session C -->
+        <div class="finish-block">
+          <textarea id="note-SessionC" class="session-note" rows="2" placeholder="Optional note — Saturday is your best day to push. How did it go?"></textarea>
+          <button class="finish-btn" onclick="finishSession('Session C — Home', currentWeek())">✓ FINISH SESSION C</button>
+        </div>
+
+      </div><!-- end session-card -->
+
+    </div><!-- end sessions-grid -->
+  </div><!-- end week1 -->
+
+  <!-- WEEK 2 -->
+  <div id="week2" class="hidden">
+    <div class="week-header">
+      <h2>Week 2 — 3 Sets × 3 Reps</h2>
+      <p>Intensity increases, volume drops. Heavier weight, fewer reps. Sets at 70% / 80% / 90%. Everything else stays identical — same exercises, same structure. Focus on bar speed and crisp technique.</p>
+    </div>
+    <div class="progression-box">
+      <h3>5/3/1 Intensity Guide — Week 2</h3>
+      <table class="prog-table">
+        <tr><th>Set</th><th>Intensity</th><th>Reps</th><th>Feel</th></tr>
+        <tr><td>Set 1</td><td>70%</td><td>3</td><td>Solid warm-up</td></tr>
+        <tr><td>Set 2</td><td>80%</td><td>3</td><td>Working hard</td></tr>
+        <tr><td class="highlight">Set 3</td><td class="highlight">90%</td><td class="highlight">3</td><td class="highlight">Heavy — 1–2 reps left in tank</td></tr>
+      </table>
+    </div>
+    <div class="tip-box">
+      <strong>Week 2 focus:</strong> Same sessions as Week 1 — just adjust the main lift percentages. All supplemental, push/pull, and assistance work stays the same sets and reps. The only thing changing is the 3 main lift sets.
+    </div>
+    <div class="tip-box">
+      <strong>Refer to Week 1 sessions</strong> for the full exercise list and video links. Only the main lift intensity changes this week.
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div id="week3" class="hidden">
+    <div class="week-header">
+      <h2>Week 3 — 5 / 3 / 1 Singles</h2>
+      <p>Peak week. The classic 5/3/1 ladder. One heavy top set. Sets at 75% / 85% / 95%. The last set at 95% is your max effort for the cycle — push it, but keep form intact.</p>
+    </div>
+    <div class="progression-box">
+      <h3>5/3/1 Intensity Guide — Week 3</h3>
+      <table class="prog-table">
+        <tr><th>Set</th><th>Intensity</th><th>Reps</th><th>Feel</th></tr>
+        <tr><td>Set 1</td><td>75%</td><td>5</td><td>Controlled opener</td></tr>
+        <tr><td>Set 2</td><td>85%</td><td>3</td><td>Serious working set</td></tr>
+        <tr><td class="highlight">Set 3</td><td class="highlight">95%</td><td class="highlight">1+</td><td class="highlight">Max effort — do as many as possible with good form</td></tr>
+      </table>
+    </div>
+    <div class="tip-box">
+      <strong>The + means AMRAP</strong> (as many reps as possible) on the last set. If you get more than 5 reps at 95%, your working max was set too low — good news, you adjust upward next cycle. All supplemental and assistance work stays the same as Weeks 1–2.
+    </div>
+  </div>
+
+  <!-- WEEK 4 DELOAD -->
+  <div id="week4" class="hidden">
+    <div class="week-header deload">
+      <h2>Week 4 — Deload</h2>
+      <p>This is not optional. Your connective tissue adapts slower than your muscles — it needs this week. Drop intensity to 40–60%. Move well, stay active, recover fully. You will feel stronger in Week 1 of the next cycle.</p>
+    </div>
+    <div class="progression-box">
+      <h3>Deload Parameters</h3>
+      <table class="prog-table">
+        <tr><th>Variable</th><th>Normal Week</th><th>Deload Week</th></tr>
+        <tr><td>Sets</td><td>3–4</td><td>2–3</td></tr>
+        <tr><td>Reps</td><td>3–8</td><td>5</td></tr>
+        <tr><td class="highlight">Intensity</td><td>65–95%</td><td class="highlight">40–60% only</td></tr>
+        <tr><td>Pull-ups</td><td>Max reps</td><td>Half of max</td></tr>
+        <tr><td>Push-ups</td><td>4×15</td><td>3×8</td></tr>
+      </table>
+    </div>
+    <div class="tip-box">
+      <strong>Deload week strategy:</strong> Same exercises, same structure. Just drastically lighter. Focus on perfect movement quality. Use this week to also assess any niggles or tightness before the next cycle. After Week 4, add 2.5kg to upper body lifts and 5kg to lower body lifts for the next cycle.
+    </div>
+    <div class="tip-box">
+      <strong>Summer adjustment:</strong> When golf season starts, deload week intensity naturally aligns with golf days. Your body gets systemic recovery even while staying active.
+    </div>
+  </div>
+
+</div><!-- end main-content -->
+
+<script>
+  // ── Week navigation ──────────────────────────────────────────
+  let activeWeek = 1;
+
+  function currentWeek() { return activeWeek; }
+
+  function showWeek(n) {
+    activeWeek = n;
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('week' + i).classList.add('hidden');
+    }
+    document.getElementById('week' + n).classList.remove('hidden');
+    document.querySelectorAll('.week-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === n - 1);
+    });
+    document.getElementById('journal-view').classList.add('hidden');
+    document.getElementById('main-content').classList.remove('hidden');
+  }
+
+  // ── Journal storage ──────────────────────────────────────────
+  function getJournal() {
+    try { return JSON.parse(localStorage.getItem('strengthJournal') || '[]'); }
+    catch(e) { return []; }
+  }
+
+  function saveJournal(entries) {
+    localStorage.setItem('strengthJournal', JSON.stringify(entries));
+  }
+
+  // ── Finish session ───────────────────────────────────────────
+  function finishSession(sessionName, weekNum) {
+    const noteId = 'note-' + sessionName.replace(/\s/g,'');
+    const noteEl = document.getElementById(noteId);
+    const note = noteEl ? noteEl.value.trim() : '';
+
+    // Count checked exercises
+    const card = noteEl ? noteEl.closest('.session-card') : null;
+    let checked = 0, total = 0;
+    if (card) {
+      card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        total++;
+        if (cb.checked) checked++;
+      });
+    }
+
+    const entry = {
+      id: Date.now(),
+      date: new Date().toLocaleDateString('sv-SE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }),
+      time: new Date().toLocaleTimeString('sv-SE', { hour:'2-digit', minute:'2-digit' }),
+      session: sessionName,
+      week: weekNum,
+      checked: checked,
+      total: total,
+      note: note
+    };
+
+    const journal = getJournal();
+    journal.unshift(entry); // newest first
+    saveJournal(journal);
+
+    // Reset checkboxes and note
+    if (card) {
+      card.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      if (noteEl) noteEl.value = '';
+    }
+
+    showToast('Session saved to journal! 💪');
+  }
+
+  // ── Toast notification ───────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── Journal view ─────────────────────────────────────────────
+  function showJournal() {
+    document.getElementById('main-content').classList.add('hidden');
+    document.getElementById('journal-view').classList.remove('hidden');
+    renderJournal();
+  }
+
+  function renderJournal() {
+    const journal = getJournal();
+    const container = document.getElementById('journal-entries');
+
+    if (journal.length === 0) {
+      container.innerHTML = '<div class="journal-empty">No sessions logged yet.<br>Complete your first session to start the journal.</div>';
+      return;
+    }
+
+    container.innerHTML = journal.map(entry => `
+      <div class="journal-entry">
+        <div class="journal-entry-header">
+          <div>
+            <div class="journal-session-name">${entry.session}</div>
+            <div class="journal-meta">Week ${entry.week} &nbsp;·&nbsp; ${entry.date} &nbsp;·&nbsp; ${entry.time}</div>
+          </div>
+          <div class="journal-completion">
+            <span class="completion-badge ${entry.checked === entry.total ? 'full' : 'partial'}">
+              ${entry.checked}/${entry.total}
+            </span>
+          </div>
+        </div>
+        ${entry.note ? `<div class="journal-note">"${entry.note}"</div>` : ''}
+        <button class="delete-btn" onclick="deleteEntry(${entry.id})">Delete</button>
+      </div>
+    `).join('');
+  }
+
+  function deleteEntry(id) {
+    const journal = getJournal().filter(e => e.id !== id);
+    saveJournal(journal);
+    renderJournal();
+  }
+</script>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Journal Modal View -->
+<div id="journal-view" class="hidden">
+  <div class="container">
+    <div class="journal-header">
+      <h2>Training Journal</h2>
+      <button class="back-btn" onclick="showWeek(1)">← Back to Plan</button>
+    </div>
+    <div id="journal-entries"></div>
+  </div>
+</div>
+
+<style>
+  /* ── Finish Session button + notes ── */
+  .finish-block {
+    padding: 16px 20px 20px;
+    border-top: 1px solid var(--border);
+    background: #141414;
+  }
+
+  .session-note {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    resize: none;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .session-note:focus { border-color: var(--accent); }
+  .session-note::placeholder { color: var(--muted); }
+
+  .finish-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #0f0f0f;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .finish-btn:active { transform: scale(0.98); opacity: 0.85; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 12px 24px;
+    border-radius: 30px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── Journal button in header ── */
+  .journal-nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .journal-nav-btn:hover { background: var(--accent); color: #0f0f0f; }
+
+  /* ── Journal view ── */
+  .journal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-top: 24px;
+  }
+
+  .journal-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .back-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .journal-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .journal-entry-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .journal-session-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .journal-meta {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .completion-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .completion-badge.full { background: var(--accent); color: #0f0f0f; }
+  .completion-badge.partial { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+  .journal-note {
+    font-size: 0.82rem;
+    color: #aaa;
+    font-style: italic;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    border-left: 2px solid var(--accent2);
+  }
+
+  .delete-btn {
+    margin-top: 12px;
+    background: none;
+    border: 1px solid #333;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .delete-btn:hover { border-color: #ff4444; color: #ff4444; }
+
+  .journal-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+</style>
+
+</body>
+</html>
