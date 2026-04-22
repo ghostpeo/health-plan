@@ -896,19 +896,28 @@
     document.querySelectorAll('.week-btn').forEach((b, i) => {
       b.classList.toggle('active', i === n - 1);
     });
-    document.getElementById('journal-view').classList.add('hidden');
-    document.getElementById('main-content').classList.remove('hidden');
+    hideJournal();
   }
 
-  // ── Journal storage ──────────────────────────────────────────
-  function getJournal() {
-    try { return JSON.parse(localStorage.getItem('strengthJournal') || '[]'); }
-    catch(e) { return []; }
+  // ── In-memory journal (primary) + localStorage (backup) ─────
+  let journalData = [];
+
+  function loadJournal() {
+    try {
+      const stored = localStorage.getItem('strengthJournal');
+      if (stored) journalData = JSON.parse(stored);
+    } catch(e) { journalData = []; }
   }
+
+  function getJournal() { return journalData; }
 
   function saveJournal(entries) {
-    localStorage.setItem('strengthJournal', JSON.stringify(entries));
+    journalData = entries;
+    try { localStorage.setItem('strengthJournal', JSON.stringify(entries)); } catch(e) {}
   }
+
+  // Load on startup
+  loadJournal();
 
   // ── Finish session ───────────────────────────────────────────
   function finishSession(sessionName, weekNum, noteId, btnEl) {
@@ -988,14 +997,25 @@
 
   // ── Journal view ─────────────────────────────────────────────
   function showJournal() {
-    document.getElementById('main-content').classList.add('hidden');
-    document.getElementById('journal-view').classList.remove('hidden');
+    const main = document.getElementById('main-content');
+    const jview = document.getElementById('journal-view');
+    main.style.display = 'none';
+    jview.style.display = 'block';
     renderJournal();
+  }
+
+  function hideJournal() {
+    const main = document.getElementById('main-content');
+    const jview = document.getElementById('journal-view');
+    jview.style.display = 'none';
+    main.style.display = 'block';
   }
 
   function renderJournal() {
     const journal = getJournal();
     const container = document.getElementById('journal-entries');
+    const countEl = document.getElementById('journal-count');
+    if (countEl) countEl.textContent = journal.length + ' session' + (journal.length !== 1 ? 's' : '') + ' logged';
 
     if (journal.length === 0) {
       container.innerHTML = '<div class="journal-empty">No sessions logged yet.<br>Complete your first session to start the journal.</div>';
@@ -1032,11 +1052,14 @@
 <div id="toast"></div>
 
 <!-- Journal Modal View -->
-<div id="journal-view" class="hidden">
+<div id="journal-view" style="display:none;">
   <div class="container">
     <div class="journal-header">
-      <h2>Training Journal</h2>
-      <button class="back-btn" onclick="showWeek(1)">← Back to Plan</button>
+      <div>
+        <h2>Training Journal</h2>
+        <div id="journal-count" style="color:var(--muted);font-size:0.8rem;margin-top:2px;"></div>
+      </div>
+      <button class="back-btn" onclick="hideJournal()">← Back to Plan</button>
     </div>
     <div id="journal-entries"></div>
   </div>
