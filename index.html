@@ -515,6 +515,15 @@
               </div>
               <a class="video-btn" href="https://www.youtube.com/watch?v=YqF8GHm5tPo" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
             </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Standing Forward Fold — Daily Progress Check</div>
+                <div class="ex-sets">2 × 60 sec · Note how far you reach · Breathe and relax down</div>
+                <div class="ex-note">Do this after every session while muscles are warm. Warm tissue stretches significantly further.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=g7HRgBG_-As" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
           </div>
 
         </div>
@@ -522,7 +531,7 @@
         <!-- Finish Session A -->
         <div class="finish-block">
           <textarea id="note-SessionA" class="session-note" rows="2" placeholder="Optional note — how did it feel? Any PBs? Anything tight?"></textarea>
-          <button class="finish-btn" onclick="finishSession('Session A — Home', currentWeek())">✓ FINISH SESSION A</button>
+          <button class="finish-btn" onclick="finishSession('Session A — Home', currentWeek(), 'note-SessionA', this)">✓ FINISH SESSION A</button>
         </div>
 
       </div>
@@ -636,7 +645,7 @@
         <!-- Finish Session B -->
         <div class="finish-block">
           <textarea id="note-SessionB" class="session-note" rows="2" placeholder="Optional note — weights used, how body felt, energy level before evening tennis?"></textarea>
-          <button class="finish-btn" style="background: var(--accent2); color: white;" onclick="finishSession('Session B — Gym', currentWeek())">✓ FINISH SESSION B</button>
+          <button class="finish-btn" style="background: var(--accent2); color: white;" onclick="finishSession('Session B — Gym', currentWeek(), 'note-SessionB', this)">✓ FINISH SESSION B</button>
         </div>
 
       </div>
@@ -749,12 +758,52 @@
             </div>
           </div>
 
+          <div class="exercise-block">
+            <div class="block-label">🎯 Flexibility Goal — Touch the Floor</div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Standing Forward Fold — Hold &amp; Breathe</div>
+                <div class="ex-sets">3 × 60 sec · Knees soft at first, straighten gradually · Let gravity do the work</div>
+                <div class="ex-note">Stage 1: Fingertips to floor. Stage 2: Palms flat. Stage 3: Forehead to thighs. Never force — relax into it.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=g7HRgBG_-As" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Seated Single-Leg Forward Fold</div>
+                <div class="ex-sets">2 × 60 sec each leg · Reach toward foot · Flex foot back</div>
+                <div class="ex-note">Targets each hamstring independently. Often one side is tighter — note which.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=qNG-KNvkc7c" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">PNF Hamstring Stretch — Contract &amp; Release</div>
+                <div class="ex-sets">3 × per leg · Contract 6 sec, release, reach further, hold 30 sec</div>
+                <div class="ex-note">Fastest flexibility gains available. Contract = push heel into floor or band. Release = go deeper.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=q5DJpITPO0I" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+            <div class="exercise-row">
+              <div class="check-wrap"><input type="checkbox"></div>
+              <div class="ex-info">
+                <div class="ex-name">Wall Hamstring Stretch — Legs Up</div>
+                <div class="ex-sets">1 × 3 min · Lie on back, legs straight up wall · Shuffle hips close to wall</div>
+                <div class="ex-note">Passive and relaxing — perfect end to the session. Let gravity decompress the spine too.</div>
+              </div>
+              <a class="video-btn" href="https://www.youtube.com/watch?v=owQ0DtmB9tA" target="_blank"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch</a>
+            </div>
+          </div>
+
         </div><!-- end exercises -->
 
         <!-- Finish Session C -->
         <div class="finish-block">
           <textarea id="note-SessionC" class="session-note" rows="2" placeholder="Optional note — Saturday is your best day to push. How did it go?"></textarea>
-          <button class="finish-btn" onclick="finishSession('Session C — Home', currentWeek())">✓ FINISH SESSION C</button>
+          <button class="finish-btn" onclick="finishSession('Session C — Home', currentWeek(), 'note-SessionC', this)">✓ FINISH SESSION C</button>
         </div>
 
       </div><!-- end session-card -->
@@ -862,13 +911,18 @@
   }
 
   // ── Finish session ───────────────────────────────────────────
-  function finishSession(sessionName, weekNum) {
-    const noteId = 'note-' + sessionName.replace(/\s/g,'');
+  function finishSession(sessionName, weekNum, noteId, btnEl) {
+    // Tactile feedback — button state change immediately on tap
+    if (btnEl) {
+      btnEl.textContent = '✓ SAVING...';
+      btnEl.style.opacity = '0.7';
+    }
+
     const noteEl = document.getElementById(noteId);
     const note = noteEl ? noteEl.value.trim() : '';
 
-    // Count checked exercises
-    const card = noteEl ? noteEl.closest('.session-card') : null;
+    // Count checked exercises — walk up to session-card from the button
+    const card = btnEl ? btnEl.closest('.session-card') : null;
     let checked = 0, total = 0;
     if (card) {
       card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
@@ -888,9 +942,14 @@
       note: note
     };
 
+    // Save to localStorage
     const journal = getJournal();
-    journal.unshift(entry); // newest first
+    journal.unshift(entry);
     saveJournal(journal);
+
+    // Verify it saved
+    const saved = getJournal();
+    const ok = saved.length > 0 && saved[0].id === entry.id;
 
     // Reset checkboxes and note
     if (card) {
@@ -898,7 +957,25 @@
       if (noteEl) noteEl.value = '';
     }
 
-    showToast('Session saved to journal! 💪');
+    // Reset button
+    setTimeout(() => {
+      if (btnEl) {
+        btnEl.textContent = ok ? '✓ SESSION SAVED!' : '✗ SAVE FAILED — TAP AGAIN';
+        btnEl.style.opacity = '1';
+        btnEl.style.background = ok ? '#44cc44' : '#cc4444';
+        btnEl.style.color = 'white';
+        setTimeout(() => {
+          if (btnEl) {
+            const isB = sessionName.includes('Gym');
+            btnEl.textContent = '✓ FINISH ' + sessionName.split('—')[0].trim().toUpperCase();
+            btnEl.style.background = isB ? 'var(--accent2)' : 'var(--accent)';
+            btnEl.style.color = isB ? 'white' : '#0f0f0f';
+          }
+        }, 2500);
+      }
+    }, 300);
+
+    showToast(ok ? 'Session saved to journal! 💪' : 'Storage error — check browser settings');
   }
 
   // ── Toast notification ───────────────────────────────────────
@@ -997,15 +1074,20 @@
     color: #0f0f0f;
     border: none;
     border-radius: 10px;
-    padding: 14px;
+    padding: 16px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.2rem;
     letter-spacing: 2px;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
+    transition: background 0.2s, color 0.2s, transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 4px 12px rgba(232,255,71,0.25);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .finish-btn:active { transform: scale(0.98); opacity: 0.85; }
+  .finish-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 1px 4px rgba(232,255,71,0.1);
+  }
 
   /* ── Toast ── */
   #toast {
