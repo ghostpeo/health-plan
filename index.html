@@ -359,6 +359,7 @@
 <header>
   <div class="header-top">
     <h1>Strength Plan</h1>
+    <span style="color:#555; font-size:0.75rem; font-family:'DM Sans',sans-serif; font-weight:400; letter-spacing:1px;">v6</span>
   </div>
   <div class="subtitle">59 · Racket Sports + Home Gym · Relative Strength Focus</div>
   <div class="week-nav">
@@ -899,30 +900,25 @@
     hideJournal();
   }
 
-  // ── IndexedDB storage (works on iOS Safari / GitHub Pages) ──
+  // ── IndexedDB journal storage ─────────────────────────────────
   let journalData = [];
   let db = null;
 
   function initDB() {
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open('StrengthJournal', 1);
+      const req = indexedDB.open('StrengthPlanJournal', 1);
       req.onupgradeneeded = e => {
-        const d = e.target.result;
-        if (!d.objectStoreNames.contains('entries')) {
-          d.createObjectStore('entries', { keyPath: 'id' });
-        }
+        e.target.result.createObjectStore('entries', { keyPath: 'id' });
       };
-      req.onsuccess = e => { db = e.target.result; resolve(db); };
-      req.onerror = () => reject(req.error);
+      req.onsuccess = e => { db = e.target.result; resolve(); };
+      req.onerror = () => reject();
     });
   }
 
-  function loadJournal() {
+  function loadFromDB() {
     return new Promise((resolve) => {
       if (!db) { resolve(); return; }
-      const tx = db.transaction('entries', 'readonly');
-      const store = tx.objectStore('entries');
-      const req = store.getAll();
+      const req = db.transaction('entries', 'readonly').objectStore('entries').getAll();
       req.onsuccess = () => {
         journalData = (req.result || []).sort((a, b) => b.id - a.id);
         resolve();
@@ -931,29 +927,26 @@
     });
   }
 
-  function getJournal() { return journalData; }
-
-  function saveJournal(entries) {
-    journalData = entries;
+  function saveToDB(entry) {
     if (!db) return;
-    const tx = db.transaction('entries', 'readwrite');
-    const store = tx.objectStore('entries');
-    store.clear();
-    entries.forEach(e => store.put(e));
+    db.transaction('entries', 'readwrite').objectStore('entries').put(entry);
   }
 
-  function deleteEntryDB(id) {
-    journalData = journalData.filter(e => e.id !== id);
+  function deleteFromDB(id) {
     if (!db) return;
-    const tx = db.transaction('entries', 'readwrite');
-    tx.objectStore('entries').delete(id);
+    db.transaction('entries', 'readwrite').objectStore('entries').delete(id);
+  }
+
+  function getJournal() { return journalData; }
+
+  function deleteEntry(id) {
+    journalData = journalData.filter(e => e.id !== id);
+    deleteFromDB(id);
     renderJournal();
   }
 
-  // Init on startup
-  initDB().then(loadJournal).then(() => {
-    console.log('Journal loaded:', journalData.length, 'entries');
-  }).catch(e => console.warn('DB init failed:', e));
+  // Initialise on page load
+  initDB().then(loadFromDB).catch(() => {});
 
   // ── Finish session ───────────────────────────────────────────
   function finishSession(sessionName, weekNum, noteId, btnEl) {
@@ -987,13 +980,10 @@
       note: note
     };
 
-    // Save to IndexedDB
-    const journal = getJournal();
-    journal.unshift(entry);
-    saveJournal(journal);
-
-    // Verify in-memory save worked
-    const ok = getJournal().length > 0 && getJournal()[0].id === entry.id;
+    // Save to IndexedDB + in-memory
+    journalData.unshift(entry);
+    saveToDB(entry);
+    const ok = true;
 
     // Reset checkboxes and note
     if (card) {
