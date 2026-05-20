@@ -359,7 +359,7 @@
 <header>
   <div class="header-top">
     <h1>Strength Plan</h1>
-    <span style="color:#555; font-size:0.75rem; font-family:'DM Sans',sans-serif; font-weight:400; letter-spacing:1px;">v6</span>
+    <span style="color:#555; font-size:0.75rem; font-family:'DM Sans',sans-serif; font-weight:400; letter-spacing:1px;">v6.1</span>
   </div>
   <div class="subtitle">59 · Racket Sports + Home Gym · Relative Strength Focus</div>
   <div class="week-nav">
@@ -903,33 +903,50 @@
   // ── IndexedDB journal storage ─────────────────────────────────
   let journalData = [];
   let db = null;
+  let dbStatus = 'not started';
 
   function initDB() {
+    dbStatus = 'initialising';
     return new Promise((resolve, reject) => {
       const req = indexedDB.open('StrengthPlanJournal', 1);
       req.onupgradeneeded = e => {
         e.target.result.createObjectStore('entries', { keyPath: 'id' });
+        dbStatus = 'upgraded';
       };
-      req.onsuccess = e => { db = e.target.result; resolve(); };
-      req.onerror = () => reject();
+      req.onsuccess = e => {
+        db = e.target.result;
+        dbStatus = 'open';
+        resolve();
+      };
+      req.onerror = () => {
+        dbStatus = 'error: ' + req.error;
+        reject();
+      };
+      req.onblocked = () => { dbStatus = 'blocked'; };
     });
   }
 
   function loadFromDB() {
     return new Promise((resolve) => {
-      if (!db) { resolve(); return; }
+      if (!db) { dbStatus += ' | load skipped (no db)'; resolve(); return; }
       const req = db.transaction('entries', 'readonly').objectStore('entries').getAll();
       req.onsuccess = () => {
         journalData = (req.result || []).sort((a, b) => b.id - a.id);
+        dbStatus += ' | loaded ' + journalData.length + ' entries';
         resolve();
       };
-      req.onerror = () => resolve();
+      req.onerror = () => {
+        dbStatus += ' | load error';
+        resolve();
+      };
     });
   }
 
   function saveToDB(entry) {
-    if (!db) return;
-    db.transaction('entries', 'readwrite').objectStore('entries').put(entry);
+    if (!db) { dbStatus += ' | save skipped (no db)'; return; }
+    const req = db.transaction('entries', 'readwrite').objectStore('entries').put(entry);
+    req.onsuccess = () => { dbStatus += ' | saved ok'; };
+    req.onerror = () => { dbStatus += ' | save error: ' + req.error; };
   }
 
   function deleteFromDB(id) {
@@ -946,7 +963,7 @@
   }
 
   // Initialise on page load
-  initDB().then(loadFromDB).catch(() => {});
+  initDB().then(loadFromDB).catch(() => { dbStatus = 'init failed'; });
 
   // ── Finish session ───────────────────────────────────────────
   function finishSession(sessionName, weekNum, noteId, btnEl) {
@@ -1042,6 +1059,9 @@
     const countEl = document.getElementById('journal-count');
     if (countEl) countEl.textContent = journal.length + ' session' + (journal.length !== 1 ? 's' : '') + ' logged';
 
+    const debugEl = document.getElementById('journal-debug');
+    if (debugEl) debugEl.textContent = 'DB status: ' + dbStatus + ' | entries in memory: ' + journalData.length;
+
     if (journal.length === 0) {
       container.innerHTML = '<div class="journal-empty">No sessions logged yet.<br>Complete your first session to start the journal.</div>';
       return;
@@ -1079,6 +1099,7 @@
       <div>
         <h2>Training Journal</h2>
         <div id="journal-count" style="color:var(--muted);font-size:0.8rem;margin-top:2px;"></div>
+        <div id="journal-debug" style="color:#555;font-size:0.7rem;margin-top:4px;font-family:monospace;"></div>
       </div>
       <button class="back-btn" onclick="hideJournal()">← Back to Plan</button>
     </div>
