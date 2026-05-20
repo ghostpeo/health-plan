@@ -359,7 +359,7 @@
 <header>
   <div class="header-top">
     <h1>Strength Plan</h1>
-    <span style="color:#555; font-size:0.75rem; font-family:'DM Sans',sans-serif; font-weight:400; letter-spacing:1px;">v6.1</span>
+    <span style="color:#555; font-size:0.75rem; font-family:'DM Sans',sans-serif; font-weight:400; letter-spacing:1px;">v6.2</span>
   </div>
   <div class="subtitle">59 · Racket Sports + Home Gym · Relative Strength Focus</div>
   <div class="week-nav">
@@ -882,6 +882,24 @@
 
 </div><!-- end main-content -->
 
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Journal View -->
+<div id="journal-view" style="display:none;">
+  <div class="container">
+    <div class="journal-header">
+      <div>
+        <h2>Training Journal</h2>
+        <div id="journal-count" style="color:var(--muted);font-size:0.8rem;margin-top:2px;"></div>
+        <div id="journal-debug" style="color:#555;font-size:0.7rem;margin-top:4px;font-family:monospace;"></div>
+      </div>
+      <button class="back-btn" onclick="hideJournal()">← Back to Plan</button>
+    </div>
+    <div id="journal-entries"></div>
+  </div>
+</div>
+
 <script>
   // ── Week navigation ──────────────────────────────────────────
   let activeWeek = 1;
@@ -1041,6 +1059,7 @@
   function showJournal() {
     const main = document.getElementById('main-content');
     const jview = document.getElementById('journal-view');
+    if (!main || !jview) { alert('Journal view not found — please reload the page'); return; }
     main.style.display = 'none';
     jview.style.display = 'block';
     renderJournal();
@@ -1086,28 +1105,14 @@
     `).join('');
   }
 
-  function deleteEntry(id) { deleteEntryDB(id); }
+  function deleteEntry(id) {
+    journalData = journalData.filter(e => e.id !== id);
+    deleteFromDB(id);
+    renderJournal();
+  }
 </script>
 
-<!-- Toast -->
-<div id="toast"></div>
 
-<!-- Journal Modal View -->
-<div id="journal-view" style="display:none;">
-  <div class="container">
-    <div class="journal-header">
-      <div>
-        <h2>Training Journal</h2>
-        <div id="journal-count" style="color:var(--muted);font-size:0.8rem;margin-top:2px;"></div>
-        <div id="journal-debug" style="color:#555;font-size:0.7rem;margin-top:4px;font-family:monospace;"></div>
-      </div>
-      <button class="back-btn" onclick="hideJournal()">← Back to Plan</button>
-    </div>
-    <div id="journal-entries"></div>
-  </div>
-</div>
-
-<style>
   /* ── Finish Session button + notes ── */
   .finish-block {
     padding: 16px 20px 20px;
